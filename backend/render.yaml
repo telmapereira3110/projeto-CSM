@@ -3,7 +3,7 @@ services:
     name: projeto-csm-backend
     env: python
     buildCommand: "pip install -r backend/requirements.txt"
-    startCommand: python app.py
+    startCommand: python backend/app.py
     envVars:
       - key: GOOGLE_PROJECT_ID
         value: "python-test-454421"
