@@ -6,22 +6,22 @@ services:
     startCommand: python app.py
     envVars:
       - key: GOOGLE_PROJECT_ID
-        value: "${GOOGLE_PROJECT_ID}"
+        value: "python-test-454421"
       - key: GOOGLE_PRIVATE_KEY_ID
-        value: "${GOOGLE_PRIVATE_KEY_ID}"
+        value: "9811dcdd4e1cad8130ea3267edea3972b64032ee"
       - key: GOOGLE_PRIVATE_KEY
-        value: "${GOOGLE_PRIVATE_KEY}"
+        value: "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCnbZKoxmPJ9lkd\nsR3e0WnKLPvKUg6E6v8GFu2nlgEKdaxbZUWjWdKkdVQtB5tIOt1EeujgNK0tDBEA\nTNokXGVZIkwYSoW9dzdkFq4V0AyGfWyD5k9CNizLRgslTEX1lO051mHslQbnNg4j\nkfsTPC72j4LYpYZ164mNN9STZTn/K/tgyO1R4xDA3GHl2J2BUCWVMjm7qsXSpwp9\nP7t50KDA/YhDghJqXordbkr5mnVRF8UFsBu/CcDMUbszNHftI/Ey9w9RmEQWywpq\nBNnoJXG1KCpUpfVBAaK0XLlcqv6rr+iw3ZO6dt/OlwXe4HIIjzzcm8Mhvpve3ilM\nJWVGIpVhAgMBAAECggEAClZXOUSXEa6FVMSfrnBFIsevO9kpSjANCeBI9azYqJsG\nWQzUcxb83xYkR5BSKpTc+ct/fzaaicXWcyuCawhy0ApnR1vPsRiEv37nRbOkzueF\nsuSL5l1upLqaByO4g32HYqe59sj5CH8UsNQ/6XqekkFMzsurOWmhS5gGFHdg4tKj\nHUHzZM3QXyhbsoI/LcTM71+CsenHBrp6p1rExpGo48JLhTUk7TDuRCF0aGHiqfxT\nhLTZlSRpeddL+H2rIgyHY/VU0OTyOodmRHKdT+eoMWca8mGBFf/qWrQJDggrHYji\nMBCuU+TzheV+l159iwEx+Ewmyg07qql+QMpyDyfJ1wKBgQDpGcqQp+43YrL5XypX\nJiRKD3UHF7LTV9BsUzi9CMCvGwgDbhHS9A2oRIgjnIUABdXxiZJ6JvFPNsbV+XFy\n+fgk4rVXY9CwEMSH98NXkz/wpR8Vc5SBFXC0AxsS3cT5TISeHV8yoeeOrOM42WBX\nEMNR/NubVoiYMT+YaN5RRXaNUwKBgQC34DCj9DbHsOnpQ6vU6vW/Oy6+a3NRFNV5\nEZfaYX07Gy0bsp9OLXbZETR2SSG4T4mMPD4hzyyQZ/t1fMHM5lu9dc4ZYa1Cr8aR\nmpY/YEXd6EoiQ/dfNL6HpVnn6MeI/76qj0Nah42Dt/NoSEOo1JnDF96eEA2JdBKa\nRPwypPxH+wKBgB09hACDYEmIUwUfH/OQsEquB7MdEOyb/mQoSFzGJU2R6X5sp0W8\nIZ5zAlTdRH3NPZov9LTn/6s9JtIemVGf87XEzpSoy7vaTpzzwohQy1uHiw+o0P8k\nTl/2Z8YFFblkFNq0uoVic+ac31/5PLGPQ8EcI/wnbbkRrHWU6hZtzUJLAoGAdaRg\nOmWjLrwHzBBZvc3eEM2CqJ4Cl5umwOD6sOOyxcArag8sUU5RPav+TreXdV6d+DUK\n44KzVmjQv2hkbf3sMBlRFXgi7AmeF8Y53q5vxPw7ghTODgGm7Q5jqTaLgyFtEZ67\nTw5vAhkNCGlDsJ7lCacZ7TMEFi9HP6BnYtef+UUCgYEAisOq6mzstG9ycXr4a8eU\nP/lzUpl36cp/nVnNnclVHQm3G8AlFQMjn2mXq3b5iiOKosBDSzfrD7zST3dDrPk/\nAQVFC2T7igGfvlG1uiDf/FfCYJBOV/7yWtjk7XZm0e2FLVPVfHwFFBZcEb6woFlw\nUuBlFTJ/kaoD1cFgyDXgGCQ=\n-----END PRIVATE KEY-----\n"
       - key: GOOGLE_CLIENT_EMAIL
-        value: "${GOOGLE_CLIENT_EMAIL}"
+        value: "python-test@python-test-454421.iam.gserviceaccount.com"
       - key: GOOGLE_CLIENT_ID
-        value: "${GOOGLE_CLIENT_ID}"
+        value: "106549662803166174700"
       - key: GOOGLE_AUTH_URI
-        value: "${GOOGLE_AUTH_URI}"
+        value: "https://accounts.google.com/o/oauth2/auth"
       - key: GOOGLE_TOKEN_URI
-        value: "${GOOGLE_TOKEN_URI}"
+        value: "https://oauth2.googleapis.com/token"
       - key: GOOGLE_AUTH_PROVIDER_CERT_URL
-        value: "${GOOGLE_AUTH_PROVIDER_CERT_URL}"
+        value: "https://www.googleapis.com/oauth2/v1/certs"
       - key: GOOGLE_CLIENT_X509_CERT_URL
-        value: "${GOOGLE_CLIENT_X509_CERT_URL}"
+        value: "https://www.googleapis.com/robot/v1/metadata/x509/python-test%40python-test-454421.iam.gserviceaccount.com"
       - key: GOOGLE_UNIVERSE_DOMAIN
-        value: "${GOOGLE_UNIVERSE_DOMAIN}"
+        value: "googleapis.com"
