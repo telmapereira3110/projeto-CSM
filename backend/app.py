@@ -11,8 +11,7 @@ from googleapiclient.errors import HttpError
 from datetime import timedelta
 import math
 import os
-from google.auth import credentials
-from google.oauth2.service_account import Credentials
+from google.oauth2 import service_account
 from dotenv import load_dotenv
 
 # Carregar variáveis de ambiente do arquivo .env (se estiver rodando localmente)
@@ -33,17 +32,16 @@ google_credentials = {
 }
 
 # Gerar as credenciais com base nas variáveis de ambiente
-credentials = Credentials.from_service_account_info(google_credentials)
+credentials = service_account.Credentials.from_service_account_info(google_credentials)
 
-# Usar essas credenciais para autenticação com a API do Google
-from google.cloud import storage
-client = storage.Client(credentials=credentials, project=os.getenv('GOOGLE_PROJECT_ID'))
+# Usar essas credenciais para autenticação com as APIs do Google
+from googleapiclient.discovery import build
 
-# Exemplo de operação usando a API do Google Cloud Storage
-buckets = list(client.list_buckets())
-print("Buckets disponíveis:")
-for bucket in buckets:
-    print(bucket.name)
+# Para a API de Google Sheets
+spreadsheet_service = build('sheets', 'v4', credentials=credentials)
+
+# Para a API de Google Drive
+drive_service = build('drive', 'v3', credentials=credentials)
 
 app = Flask(__name__)
 CORS(app) # Permite que o React acesse a API
