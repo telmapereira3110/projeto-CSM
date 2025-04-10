@@ -847,5 +847,6 @@ def clear_cache():
     cache_dados["timestamp_cmj_sj"] = None
     return jsonify({"mensagem": "Cache limpo com sucesso."})
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))  # Usar a porta definida pelo Render ou 5000 por padrão
+    app.run(host="0.0.0.0", port=port)  # O Flask precisa ouvir em "0.0.0.0" no ambiente do Render
