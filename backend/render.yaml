@@ -5,5 +5,23 @@ services:
     buildCommand: ""
     startCommand: python app.py
     envVars:
-      - key: GOOGLE_APPLICATION_CREDENTIALS
-        value: credentials.json
+      - key: GOOGLE_PROJECT_ID
+        value: "${GOOGLE_PROJECT_ID}"
+      - key: GOOGLE_PRIVATE_KEY_ID
+        value: "${GOOGLE_PRIVATE_KEY_ID}"
+      - key: GOOGLE_PRIVATE_KEY
+        value: "${GOOGLE_PRIVATE_KEY}"
+      - key: GOOGLE_CLIENT_EMAIL
+        value: "${GOOGLE_CLIENT_EMAIL}"
+      - key: GOOGLE_CLIENT_ID
+        value: "${GOOGLE_CLIENT_ID}"
+      - key: GOOGLE_AUTH_URI
+        value: "${GOOGLE_AUTH_URI}"
+      - key: GOOGLE_TOKEN_URI
+        value: "${GOOGLE_TOKEN_URI}"
+      - key: GOOGLE_AUTH_PROVIDER_CERT_URL
+        value: "${GOOGLE_AUTH_PROVIDER_CERT_URL}"
+      - key: GOOGLE_CLIENT_X509_CERT_URL
+        value: "${GOOGLE_CLIENT_X509_CERT_URL}"
+      - key: GOOGLE_UNIVERSE_DOMAIN
+        value: "${GOOGLE_UNIVERSE_DOMAIN}"
