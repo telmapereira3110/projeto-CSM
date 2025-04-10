@@ -170,6 +170,8 @@ def carregar_dados_wellness():
         cache_dados["dados_wellness"] = dados_wellness
         cache_dados["timestamp_wellness"] = datetime.now()
 
+        print(f"Retornando dados: {dados_wellness} e jogadores: {jogadores_unicos}")  # Adicionando print para depuração
+
         return dados_wellness, jogadores_unicos
 
     except HttpError as error:
@@ -661,6 +663,9 @@ def get_microciclos():
 
     # Obter todos os microciclos únicos dos jogadores
     microciclos = set()
+
+    # Verifique o que você está recebendo em `dados_wellness`
+    print(f"Dados de wellness: {dados_wellness}")
 
     for jogador in dados_wellness:
         microciclos.update(dados_wellness[jogador].keys())
