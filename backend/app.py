@@ -11,41 +11,39 @@ from googleapiclient.errors import HttpError
 from datetime import timedelta
 import math
 import os
-from google.oauth2 import service_account
+from google.auth import credentials
+from google.oauth2.service_account import Credentials
+from dotenv import load_dotenv
 
-def obter_credenciais():
-    # Obtém as variáveis de ambiente
-    google_project_id = os.getenv('GOOGLE_PROJECT_ID')
-    google_private_key_id = os.getenv('GOOGLE_PRIVATE_KEY_ID')
-    google_private_key = os.getenv('GOOGLE_PRIVATE_KEY').replace('\\n', '\n')  # Corrige a quebra de linha
-    google_client_email = os.getenv('GOOGLE_CLIENT_EMAIL')
-    google_client_id = os.getenv('GOOGLE_CLIENT_ID')
-    google_auth_uri = os.getenv('GOOGLE_AUTH_URI')
-    google_token_uri = os.getenv('GOOGLE_TOKEN_URI')
-    google_auth_provider_cert_url = os.getenv('GOOGLE_AUTH_PROVIDER_CERT_URL')
-    google_client_x509_cert_url = os.getenv('GOOGLE_CLIENT_X509_CERT_URL')
+# Carregar variáveis de ambiente do arquivo .env (se estiver rodando localmente)
+load_dotenv()  # Se você estiver testando localmente, coloque as variáveis no arquivo .env
 
-    # Define o payload da credencial
-    credentials_info = {
-        'type': 'service_account',
-        'project_id': google_project_id,
-        'private_key_id': google_private_key_id,
-        'private_key': google_private_key,
-        'client_email': google_client_email,
-        'client_id': google_client_id,
-        'auth_uri': google_auth_uri,
-        'token_uri': google_token_uri,
-        'auth_provider_x509_cert_url': google_auth_provider_cert_url,
-        'client_x509_cert_url': google_client_x509_cert_url,
-    }
+# Carregar as credenciais do Google a partir das variáveis de ambiente
+google_credentials = {
+    "type": "service_account",
+    "project_id": os.getenv('GOOGLE_PROJECT_ID'),
+    "private_key_id": os.getenv('GOOGLE_PRIVATE_KEY_ID'),
+    "private_key": os.getenv('GOOGLE_PRIVATE_KEY').replace("\\n", "\n"),  # Corrigindo quebras de linha
+    "client_email": os.getenv('GOOGLE_CLIENT_EMAIL'),
+    "client_id": os.getenv('GOOGLE_CLIENT_ID'),
+    "auth_uri": os.getenv('GOOGLE_AUTH_URI'),
+    "token_uri": os.getenv('GOOGLE_TOKEN_URI'),
+    "auth_provider_x509_cert_url": os.getenv('GOOGLE_AUTH_PROVIDER_CERT_URL'),
+    "client_x509_cert_url": os.getenv('GOOGLE_CLIENT_X509_CERT_URL')
+}
 
-    # Cria as credenciais usando as variáveis de ambiente
-    credentials = service_account.Credentials.from_service_account_info(credentials_info)
+# Gerar as credenciais com base nas variáveis de ambiente
+credentials = Credentials.from_service_account_info(google_credentials)
 
-    return credentials
+# Usar essas credenciais para autenticação com a API do Google
+from google.cloud import storage
+client = storage.Client(credentials=credentials, project=os.getenv('GOOGLE_PROJECT_ID'))
 
-# Agora, você pode usar a função 'obter_credenciais()' para obter as credenciais no seu app.py
-spreadsheet_service = build('sheets', 'v4', credentials=obter_credenciais())
+# Exemplo de operação usando a API do Google Cloud Storage
+buckets = list(client.list_buckets())
+print("Buckets disponíveis:")
+for bucket in buckets:
+    print(bucket.name)
 
 app = Flask(__name__)
 CORS(app) # Permite que o React acesse a API
