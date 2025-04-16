@@ -486,7 +486,13 @@ def criar_dados():
 
         # Iterar pelos microciclos para cada jogador
         for microciclo in sorted(carga_interna.get(jogador, {}).keys()):  # Ordenar os microciclos
-            dados[jogador][microciclo] = {
+            dados[jogador][microciclo] = {}
+
+           # Acessando os dados dentro de cada microciclo
+            microciclo_data = carga_interna[jogador][microciclo]
+
+            for dia, dados_dia in microciclo_data.items():
+                dados[jogador][microciclo][dia] = {
                 "ACWR PSE": racio_carga_interna.get(microciclo, 0),
                 "ACWR DT": racio_carga_externa_dt.get(microciclo, 0),
                 "Wellness": media_wellness.get(microciclo, 0),
