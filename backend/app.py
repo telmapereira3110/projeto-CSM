@@ -486,14 +486,15 @@ def criar_dados():
 
         # Iterar pelos microciclos para cada jogador
         for microciclo in sorted(carga_interna.get(jogador, {}).keys()):  # Ordenar os microciclos
-            microciclo_str = str(microciclo)  # <--- esta linha aqui!
-            dados[jogador][microciclo_str] = {
+            dados[jogador][microciclo] = {
                 "ACWR PSE": racio_carga_interna.get(microciclo, 0),
                 "ACWR DT": racio_carga_externa_dt.get(microciclo, 0),
                 "Wellness": media_wellness.get(microciclo, 0),
                 "Monotonia": monotonia_micro.get(microciclo, 0),
                 "Strain": strain_micro.get(microciclo, 0),
             }
+
+    print(dados)  # imprime tudo o que foi gerado
 
     return dados
 
