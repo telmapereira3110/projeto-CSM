@@ -546,7 +546,10 @@ def calcular_z_score(dados):
 
     return z_scores
 
-def get_z_score(jogador, microciclo, variavel, z_scores):
+def get_z_score(jogador, microciclo, variavel):
+
+    dados = criar_dados()
+    z_scores = calcular_z_score(dados)
 
     # Verifica se o jogador, microciclo e variável existem nos Z-scores calculados
     if jogador not in z_scores or microciclo not in z_scores[jogador]:
