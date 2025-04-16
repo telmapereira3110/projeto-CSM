@@ -486,7 +486,7 @@ def criar_dados():
 
         # Iterar pelos microciclos para cada jogador
         for microciclo in sorted(carga_interna.get(jogador, {}).keys()):  # Ordenar os microciclos
-            micrococlo_str = str(microciclo)
+            microciclo_str = str(microciclo)  # <--- esta linha aqui!
             dados[jogador][microciclo_str] = {
                 "ACWR PSE": racio_carga_interna.get(microciclo, 0),
                 "ACWR DT": racio_carga_externa_dt.get(microciclo, 0),
