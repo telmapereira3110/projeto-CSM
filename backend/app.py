@@ -444,8 +444,7 @@ def calcular_media_wellness(jogador, dados_wellness):
         for valores in dias.values():
             for var in soma_variaveis:
                 try:
-                    # Verifica se o valor é válido (não vazio e é numérico)
-                    if valores[var] != '' and valores[var].isdigit():
+                    if isinstance(valores[var], (int, float)):  # Verifica se é um número inteiro ou float
                         soma_variaveis[var] += float(valores[var])
                 
                 except ValueError:
