@@ -526,8 +526,11 @@ def calcular_z_score(dados):
             for jogador_dados in dados.values():
                 if microciclo in jogador_dados and variavel in jogador_dados[microciclo]:
                     valor = jogador_dados[microciclo][variavel]
-                    if valor is not None:
+                    try:
+                        valor = float(valor)
                         valores.append(valor)
+                    except (ValueError, TypeError):
+                        continue  # Ignora valores inválidos
 
             # Calcular média e desvio padrão
             if valores:
