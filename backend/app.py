@@ -629,8 +629,8 @@ def carregar_dados_cmj_sj():
                 sj[jogador] = {}
 
             # Verificar se há valor no CMJ e SJ, senão colocar None
-            cmj_valor = (linha.get('Height_CMJ' or '')).strip()
-            sj_valor = (linha.get('Height_SJ' or '')).strip()
+            cmj_valor = (linha.get('Height_CMJ') or '').strip()
+            sj_valor = (linha.get('Height_SJ') or '').strip()
 
             try:
                 cmj_valor = float(cmj_valor) if cmj_valor else None
