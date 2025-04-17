@@ -524,35 +524,35 @@ def calcular_z_score(dados):
     for jogador in dados:
         z_scores[jogador] = {}
 
-    for microciclo in microciclos:
-        z_scores[jogador][microciclo] = {}
+        for microciclo in microciclos:
+            z_scores[jogador][microciclo] = {}
 
-        for variavel in variaveis:
-            valores = []
+            for variavel in variaveis:
+                valores = []
 
-            # Coletar valores de todos os jogadores para a variável no microciclo atual
-            for jogador_dados in dados.values():
-                if microciclo in jogador_dados and variavel in jogador_dados[microciclo]:
-                    valor = jogador_dados[microciclo][variavel]
-                    try:
-                        valor = float(valor)
-                        valores.append(valor)
-                    except (ValueError, TypeError):
-                        continue  # Ignora valores inválidos
+                # Coletar valores de todos os jogadores para a variável no microciclo atual
+                for jogador_dados in dados.values():
+                    if microciclo in jogador_dados and variavel in jogador_dados[microciclo]:
+                        valor = jogador_dados[microciclo][variavel]
+                        try:
+                            valor = float(valor)
+                            valores.append(valor)
+                        except (ValueError, TypeError):
+                            continue  # Ignora valores inválidos
 
-            # Calcular média e desvio padrão
-            if valores:
-                media = np.mean(valores)
-                desvio_padrao = np.std(valores, ddof=1)  # ddof=1 para desvio padrão amostral
-            else:
-                media = 0
-                desvio_padrao = 1  # Se não há valores, evitamos a divisão por 0
+                # Calcular média e desvio padrão
+                if valores:
+                    media = np.mean(valores)
+                    desvio_padrao = np.std(valores, ddof=1)  # ddof=1 para desvio padrão amostral
+                else:
+                    media = 0
+                    desvio_padrao = 1  # Se não há valores, evitamos a divisão por 0
 
-            if microciclo in dados[jogador] and variavel in dados[jogador][microciclo]:
-                valor = dados[jogador][microciclo][variavel]
-                z_score = round((valor-media)/desvio_padrao, 2) if desvio_padrao != 0 else 0
+                if microciclo in dados[jogador] and variavel in dados[jogador][microciclo]:
+                    valor = dados[jogador][microciclo][variavel]
+                    z_score = round((valor-media)/desvio_padrao, 2) if desvio_padrao != 0 else 0
 
-                z_scores[jogador][microciclo][variavel] = z_score
+                    z_scores[jogador][microciclo][variavel] = z_score
 
     return z_scores
 
