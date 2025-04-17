@@ -51,9 +51,7 @@ CORS(app) # Permite que o React acesse a API
 #    "timestamp_pse": None,
 #    "dados_pse": None,
 #    "timestamp_wellness": None,
-#    "dados_wellness": None,
-#    "timestamp_cmj_sj": None,
-#    "dados_cmj_sj": None
+#    "dados_wellness": None
 #}
 
 # Tempo de validade do cache (ex: 10 minutos)
@@ -578,89 +576,6 @@ def get_z_score(jogador, microciclo, variavel):
     })
 
 
-# Função para carregar os dados do CMJ e SJ do Google Sheets
-def carregar_dados_cmj_sj():
-    now = datetime.now()
-
-    # Verifica se já temos dados no cache e se estão dentro do TTL
-    #if cache_dados["dados_cmj_sj"] is not None and cache_dados["timestamp_cmj_sj"] is not None:
-        #if now - cache_dados["timestamp_cmj_sj"] < CACHE_TTL:
-            #return cache_dados["dados_cmj_sj"]
-        
-    range_name = 'sj_cmj!A:D'  # Nome correto da aba e colunas
-    spreadsheet_id = '1CM-UKcOOWM1LLbBP_OL5nqL7n2IG0MZPQA10WeadQek'
-
-    try:
-
-        # Buscar os dados da planilha
-        result = chamada_com_espera(spreadsheet_service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_name))
-        valores = result.get('values', [])
-
-        if not valores or len(valores) < 2:
-            return {}, {}
-
-        # Criar DataFrame
-        colunas = valores[0]
-        df = pd.DataFrame(valores[1:], columns=colunas)
-
-        # Garantir que a coluna de data seja convertida corretamente para datetime
-        df['Data'] = pd.to_datetime(df['Data'], format='%d/%m/%Y')
-
-        # Determinar a primeira data para calcular microciclos
-        primeira_data = df['Data'].min()
-
-        # Inicializar dicionários separados para CMJ e SJ
-        cmj = {}
-        sj = {}
-
-        for _, linha in df.iterrows():
-            jogador = linha.get('Nome', '').strip()
-
-            # Verifica se o nome do jogador é válido (não vazio)
-            if not jogador:
-                continue
-            
-            data = linha['Data']
-            microciclo = calcular_microciclo(data, primeira_data)
-
-            # Criar dicionário para cada jogador se ainda não existir
-            if jogador not in cmj:
-                cmj[jogador] = {}
-                sj[jogador] = {}
-
-            # Verificar se há valor no CMJ e SJ, senão colocar None
-            cmj_valor = (linha.get('Height_CMJ') or '').strip()
-            sj_valor = (linha.get('Height_SJ') or '').strip()
-
-            try:
-                cmj_valor = float(cmj_valor) if cmj_valor else None
-            except ValueError:
-                cmj_valor = None
-
-            try:
-                sj_valor = float(sj_valor) if sj_valor else None
-            except ValueError:
-                sj_valor = None
-
-            # Armazenar os valores, mesmo que None
-            cmj[jogador][microciclo] = {"CMJ": cmj_valor}
-            sj[jogador][microciclo] = {"SJ": sj_valor}
-
-            # Atualiza o cache
-        #cache_dados["dados_cmj_sj"] = (cmj, sj)
-        #cache_dados["timestamp_cmj_sj"] = datetime.now()
-
-        return cmj, sj
-
-    except HttpError as error:
-        # Se o erro não for de cota (429), levanta o erro
-        if error.resp.status != 429:
-            print(f"Erro ao carregar dados: {error}")
-            raise error
-        else:
-            print("Erro 429: Excedeu o limite de requisições")
-            raise
-
 # Rota para buscar jogadores
 @app.route('/api/jogadores', methods=['GET'])
 def get_jogadores():
@@ -835,23 +750,6 @@ def zscore_monotonia(jogador, microciclo):
 def zscore_strain(jogador, microciclo):
     return get_z_score(jogador, microciclo, "Strain")
     
-# Rota para buscar os dados do CMJ de um jogador e microciclo específico
-@app.route('/api/cmj/<jogador>/<int:microciclo>')
-def get_cmj(jogador, microciclo):
-    cmj, _ = carregar_dados_cmj_sj()
-    if jogador in cmj and microciclo in cmj[jogador]:
-        return jsonify(cmj[jogador][microciclo])
-    else:
-        return jsonify({"erro": "Jogador ou Microciclo não encontrado"}), 404
-    
-# Rota para buscar os dados do SJ de um jogador e microciclo específico
-@app.route('/api/sj/<jogador>/<int:microciclo>')
-def get_sj(jogador, microciclo):
-    _, sj = carregar_dados_cmj_sj()
-    if jogador in sj and microciclo in sj[jogador]:
-        return jsonify(sj[jogador][microciclo])
-    else:
-        return jsonify({"erro": "Jogador ou Microciclo não encontrado"}), 404
     
 # Rota para limpar o cache manualmente
 #@app.route('/api/cache/clear', methods=['POST'])
@@ -860,8 +758,6 @@ def get_sj(jogador, microciclo):
     #cache_dados["timestamp_pse"] = None
     #cache_dados["dados_wellness"] = None
     #cache_dados["timestamp_wellness"] = None
-    #cache_dados["dados_cmj_sj"] = None
-    #cache_dados["timestamp_cmj_sj"] = None
     #return jsonify({"mensagem": "Cache limpo com sucesso."})
 
 if __name__ == "__main__":
