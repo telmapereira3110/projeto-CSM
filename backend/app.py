@@ -485,14 +485,8 @@ def criar_dados():
         monotonia_micro, strain_micro = calcular_monotonia_strain(jogador, carga_interna)
 
         # Iterar pelos microciclos para cada jogador
-        for microciclo in sorted(carga_interna.get(jogador, {}).keys()):  # Ordenar os microciclos
-            dados[jogador][microciclo] = {}
-
-           # Acessando os dados dentro de cada microciclo
-            microciclo_data = carga_interna[jogador][microciclo]
-
-            for dia, dados_dia in microciclo_data.items():
-                dados[jogador][microciclo][dia] = {
+        for microciclo in sorted(carga_interna.get(jogador, {}).keys()):
+            dados[jogador][microciclo] = {
                 "ACWR PSE": racio_carga_interna.get(microciclo, 0),
                 "ACWR DT": racio_carga_externa_dt.get(microciclo, 0),
                 "Wellness": media_wellness.get(microciclo, 0),
@@ -516,63 +510,47 @@ def calcular_z_score(dados):
     if not dados:
         return {}
     
-    # Obter lista de microciclos 
+    # Obter lista de microciclos e variáveis
     microciclos = list(next(iter(dados.values())).keys())  # Pega os microciclos de um jogador qualquer
-    
-    # Vamos assumir que pelo menos um microciclo tem pelo menos um dia
-    exemplo_jogador = next(iter(dados.values()))
-    exemplo_micro = next(iter(exemplo_jogador.values()))
-    variaveis = list(next(iter(exemplo_micro.values())).keys())
-    
+    variaveis = list(next(iter(dados.values())).values())[0].keys()  # Pega as variáveis do primeiro microciclo
+
     # Coletar valores de todos os jogadores para o microciclo especificado
-    for microciclo in microciclos:
-        for jogador in dados:
-            z_scores.setdefault(jogador, {})
+    for jogador in dados:
+        z_scores[jogador] = {}
+
+        for microciclo in microciclos:
             z_scores[jogador][microciclo] = {}
 
             for variavel in variaveis:
                 valores = []
 
-                # Coletar os valores médios de todos os jogadores para esse microciclo e variável
-                for j in dados:
-                    if microciclo not in dados[j]:
-                        continue
+                # Coletar valores de todos os jogadores para a variável no microciclo atual
+                for jogador_dados in dados.values():
+                    if microciclo in jogador_dados and variavel in jogador_dados[microciclo]:
+                        valor = jogador_dados[microciclo][variavel]
+                        try:
+                            valor = float(valor)
+                            valores.append(valor)
+                        except (ValueError, TypeError):
+                            continue  # Ignora valores inválidos
 
-                    valores_dia = []
-                    for dia in dados[j][microciclo].values():
-                        if variavel in dia:
-                            try:
-                                valores_dia.append(float(dia[variavel]))
-                            except (ValueError, TypeError):
-                                continue
-
-                    if valores_dia:
-                        media_jogador = np.mean(valores_dia)
-                        valores.append(media_jogador)
-
+                # Calcular média e desvio padrão
                 if valores:
                     media = np.mean(valores)
-                    desvio_padrao = np.std(valores, ddof=1)
+                    desvio_padrao = np.std(valores, ddof=1)  # ddof=1 para desvio padrão amostral
                 else:
                     media = 0
-                    desvio_padrao = 1
+                    desvio_padrao = 1  # Se não há valores, evitamos a divisão por 0
 
-                # Agora calcular o Z-score para o jogador atual
-                valores_dia_jogador = []
-                for dia in dados[jogador].get(microciclo, {}).values():
-                    if variavel in dia:
-                        try:
-                            valores_dia_jogador.append(float(dia[variavel]))
-                        except (ValueError, TypeError):
-                            continue
-
-                if valores_dia_jogador:
-                    media_jogador = np.mean(valores_dia_jogador)
-                    z_score = round((media_jogador - media) / desvio_padrao, 2) if desvio_padrao != 0 else 0
-                else:
-                    z_score = 0
-
-                z_scores[jogador][microciclo][variavel] = z_score
+                # Calcular o Z-score apenas se o jogador tem esse valor
+                if microciclo in dados[jogador] and variavel in dados[jogador][microciclo]:
+                    try:
+                        valor = float(dados[jogador][microciclo][variavel])
+                        z_score = round((valor - media) / desvio_padrao, 2) if desvio_padrao != 0 else 0
+                    except (ValueError, TypeError):
+                        z_score = 0
+                        
+                    z_scores[jogador][microciclo][variavel] = z_score
 
     return z_scores
 
