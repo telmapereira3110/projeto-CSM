@@ -530,14 +530,15 @@ def calcular_z_score(dados):
                         valor = jogador_dados[microciclo][variavel]
                         try:
                             valor = float(valor)
-                            valores.append(valor)
+                            if not np.isnan(valor):
+                                valores.append(valor)
                         except (ValueError, TypeError):
                             continue  # Ignora valores inválidos
 
                 # Calcular média e desvio padrão
                 if valores:
-                    media = np.mean(valores)
-                    desvio_padrao = np.std(valores, ddof=1)  # ddof=1 para desvio padrão amostral
+                    media = np.nanmean(valores)
+                    desvio_padrao = np.nanstd(valores, ddof=1)  # ddof=1 para desvio padrão amostral
                 else:
                     media = 0
                     desvio_padrao = 1  # Se não há valores, evitamos a divisão por 0
@@ -546,7 +547,7 @@ def calcular_z_score(dados):
                 if microciclo in dados[jogador] and variavel in dados[jogador][microciclo]:
                     try:
                         valor = float(dados[jogador][microciclo][variavel])
-                        z_score = round((valor - media) / desvio_padrao, 2) if desvio_padrao != 0 else 0
+                        z_score = round((valor - media) / desvio_padrao, 2) if desvio_padrao != 0 and not np.isnan(valor) else 0
                     except (ValueError, TypeError):
                         z_score = 0
                         
