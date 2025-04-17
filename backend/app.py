@@ -299,12 +299,12 @@ def carregar_dados_pse_carga_treino():
 
             carga_externa_dt[jogador][microciclo][dia_da_semana].append({
                 'data_treino': data_str,
-                'distancia_total': dist_total
+                'distancia_total': round(dist_total, 2)
             })
 
             carga_externa_hs[jogador][microciclo][dia_da_semana].append({
                 'data_treino': data_str,
-                'distancia_hs': hs_total
+                'distancia_hs': round(hs_total, 2)
             })
 
             # Atualiza o cache
@@ -417,9 +417,9 @@ def calcular_monotonia_strain(jogador, carga_interna):
         if cargas:
             media = np.mean(cargas)
             desvio_padrao = np.std(cargas, ddof=1)
-            monotonia = round(media / desvio_padrao, 2) if desvio_padrao != 0 else 0
+            monotonia = float(round(media / desvio_padrao, 2)) if desvio_padrao != 0 else 0
             total_carga = sum(cargas)
-            strain = round(monotonia * total_carga, 2)
+            strain = float(round(monotonia * total_carga, 2))
         else:
             monotonia = 0
             strain = 0
@@ -454,7 +454,7 @@ def calcular_media_wellness(jogador, dados_wellness):
         if total_dias > 0:
             # Calcular a média das variáveis por microciclo
             media_microciclo = np.mean(list(soma_variaveis.values())) / total_dias
-            media_wellness[microciclo] = round(media_microciclo, 2)  # Arredonda para 2 casas decimais
+            media_wellness[microciclo] = float(round(media_microciclo, 2))  # Arredonda para 2 casas decimais
 
     return media_wellness
 
