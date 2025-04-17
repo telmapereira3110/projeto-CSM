@@ -61,9 +61,6 @@ function App() {
   const [zScoreWellness, setZScoreWellness] = useState(null);
   const [zScoreMonotonia, setZScoreMonotonia] = useState(null);
   const [zScoreStrain, setZScoreStrain] = useState(null);
-  const [cmjData, setCMJData] = useState(null);
-  const [sjData, setSJData] = useState(null);
-
 
 
   // Buscar os jogadores da API Flask quando a página carregar
@@ -131,16 +128,6 @@ function App() {
         .then((response) => response.json())
         .then((data) => setZScoreStrain(data))
         .catch((error) => console.error("Erro ao buscar Z-score Strain:", error));
-
-      fetch(`http://127.0.0.1:5000/api/cmj/${jogador}/${microciclo}`)
-        .then((response) => response.json())
-        .then((data) => setCMJData(data))
-        .catch((error) => console.error("Erro ao buscar CMJ:", error));
-
-      fetch(`http://127.0.0.1:5000/api/sj/${jogador}/${microciclo}`)
-        .then((response) => response.json())
-        .then((data) => setSJData(data))
-        .catch((error) => console.error("Erro ao buscar SJ:", error));
     }
   }, [jogador, microciclo]); // Executa sempre que o jogador ou microciclo mudar
 
@@ -1125,157 +1112,7 @@ function App() {
     ],  
   };
 
-  // Acumular valores de CMJ para os gráficos
-  const [cmjValores, setCMJValores] = useState([]);
-
-  useEffect(() => {
-    const fetchCMJValores = async () => {
-      const valores = [];
-      for (let i = 1; i <= microciclo; i++) {
-
-        try {
-          const response = await fetch(`http://127.0.0.1:5000/api/cmj/${jogador}/${i}`);
-          const data = await response.json();
-          valores.push(data.CMJ || 0);
-        } catch (error) {
-          console.error(`Erro ao buscar CMJ para microciclo ${i}:`, error);
-          valores.push(0); // Caso haja erro, adiciona 0 como fallback
-        }
-      }
-      setCMJValores(valores);
-    };
-
-    if (jogador && microciclo) {
-      fetchCMJValores();
-    }
-  }, [jogador, microciclo]); // Atualiza quando o jogador ou microciclo mudar
-
-  // Acumular valores de SJ para os gráficos
-  const [sjValores, setSJValores] = useState([]);
-
-  useEffect(() => {
-    const fetchSJValores = async () => {
-      const valores = [];
-      for (let i = 1; i <= microciclo; i++) {
-
-        try {
-          const response = await fetch(`http://127.0.0.1:5000/api/sj/${jogador}/${i}`);
-          const data = await response.json();
-          valores.push(data.SJ || 0);
-        } catch (error) {
-          console.error(`Erro ao buscar CMJ para microciclo ${i}:`, error);
-          valores.push(0); // Caso haja erro, adiciona 0 como fallback
-        }
-      }
-      setSJValores(valores);
-    };
-
-    if (jogador && microciclo) {
-      fetchSJValores();
-    }
-  }, [jogador, microciclo]); // Atualiza quando o jogador ou microciclo mudar
-
-  // Acumular valores de CMJ para os gráficos do jogador 1
-  const [cmjValoresJogador1, setCMJValoresJogador1] = useState([]);
-
-  useEffect(() => {
-    const fetchCMJValoresJogador1 = async () => {
-      const valores = [];
-      for (let i = 1; i <= microciclo; i++) {
-
-        try {
-          const response = await fetch(`http://127.0.0.1:5000/api/cmj/${jogador1}/${i}`);
-          const data = await response.json();
-          valores.push(data.CMJ || 0);
-        } catch (error) {
-          console.error(`Erro ao buscar CMJ para microciclo ${i}:`, error);
-          valores.push(0); // Caso haja erro, adiciona 0 como fallback
-        }
-      }
-      setCMJValoresJogador1(valores);
-    };
-
-    if (jogador1 && microciclo) {
-      fetchCMJValoresJogador1();
-    }
-  }, [jogador1, microciclo]); // Atualiza quando o jogador ou microciclo mudar
-
-  // Acumular valores de SJ para os gráficos do Jogador 1
-  const [sjValoresJogador1, setSJValoresJogador1] = useState([]);
-
-  useEffect(() => {
-    const fetchSJValoresJogador1 = async () => {
-      const valores = [];
-      for (let i = 1; i <= microciclo; i++) {
-
-        try {
-          const response = await fetch(`http://127.0.0.1:5000/api/sj/${jogador1}/${i}`);
-          const data = await response.json();
-          valores.push(data.SJ || 0);
-        } catch (error) {
-          console.error(`Erro ao buscar CMJ para microciclo ${i}:`, error);
-          valores.push(0); // Caso haja erro, adiciona 0 como fallback
-        }
-      }
-      setSJValoresJogador1(valores);
-    };
-
-    if (jogador1 && microciclo) {
-      fetchSJValoresJogador1();
-    }
-  }, [jogador1, microciclo]); // Atualiza quando o jogador ou microciclo mudar
-
-  // Acumular valores de CMJ para os gráficos do jogador 2
-  const [cmjValoresJogador2, setCMJValoresJogador2] = useState([]);
-
-  useEffect(() => {
-    const fetchCMJValoresJogador2 = async () => {
-      const valores = [];
-      for (let i = 1; i <= microciclo; i++) {
-
-        try {
-          const response = await fetch(`http://127.0.0.1:5000/api/cmj/${jogador2}/${i}`);
-          const data = await response.json();
-          valores.push(data.CMJ || 0);
-        } catch (error) {
-          console.error(`Erro ao buscar CMJ para ${i}:`, error);
-          valores.push(0); // Caso haja erro, adiciona 0 como fallback
-        }
-      }
-      setCMJValoresJogador2(valores);
-    };
-
-    if (jogador2 && microciclo) {
-      fetchCMJValoresJogador2();
-    }
-  }, [jogador2, microciclo]); // Atualiza quando o jogador ou microciclo mudar
-
-  // Acumular valores de SJ para os gráficos do Jogador 2
-  const [sjValoresJogador2, setSJValoresJogador2] = useState([]);
-
-  useEffect(() => {
-    const fetchSJValoresJogador2 = async () => {
-      const valores = [];
-      for (let i = 1; i <= microciclo; i++) {
-
-        try {
-          const response = await fetch(`http://127.0.0.1:5000/api/sj/${jogador2}/${i}`);
-          const data = await response.json();
-          valores.push(data.SJ || 0);
-        } catch (error) {
-          console.error(`Erro ao buscar CMJ para microciclo ${i}:`, error);
-          valores.push(0); // Caso haja erro, adiciona 0 como fallback
-        }
-      }
-      setSJValoresJogador2(valores);
-    };
-
-    if (jogador2 && microciclo) {
-      fetchSJValoresJogador2();
-    }
-  }, [jogador2, microciclo]); // Atualiza quando o jogador ou microciclo mudar
-
-  
+ 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h1>Instrumento de Monitorização</h1>
@@ -1340,7 +1177,6 @@ function App() {
             <option value="Carga de Treino">Carga de Treino</option>
             <option value="Monotonia & Strain">Monotonia & Strain</option>
             <option value="Z-score">Z-score</option>
-            <option value="CMJ & SJ">CMJ & SJ</option>
           </select>       
 
 
@@ -1829,76 +1665,7 @@ function App() {
                 </div>
               </div>
             </div>
-          )}
-
-          {/* Exibir a análise CMJ & SJ*/}
-          {jogador && variavel === "CMJ & SJ" && (
-            <div style={{ marginTop: "20px" }}>
-              <h2>CMJ & SJ</h2>
-
-              {/* Exibir a análise Carga Interna*/}
-              <h3>CMJ & SJ da atleta {jogador}</h3>
-
-              {cmjData && sjData ? (
-                <div>
-                  <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                    <h3 style={{color:"green"}}>CMJ: {cmjData.CMJ || 0}</h3> 
-                    <h3 style={{color:"orange"}}>SJ: {sjData.SJ || 0}</h3> 
-                  </div>
-                
-                  {/* Contêiner para os gráficos lado a lado */}
-                  <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "20px" }}>
-
-                    {/* Gráfico acumulado de CMJ */}
-                    <div style={{ width: "500px", height: "300px", margin: "auto" }}>
-                      <Bar 
-                        data={{
-                          labels: Array.from({ length: microciclo }, (_, i) => `Microciclo ${i + 1}`), // Rótulos dinâmicos
-                          datasets: [
-                            {
-                              label: "CMJ por Microciclo",
-                              data: cmjValores,
-                              backgroundColor: "rgba(105, 235, 54, 0.5)",
-                              borderColor: "rgb(114, 235, 54)",
-                              borderWidth: 1
-                            }
-                          ]
-                        }}
-                        options={{
-                          ...tamanho,
-                          plugins: { title: { display: true, text: "CMJ por Microciclo" } }
-                        }}
-                      />
-                    </div>
-
-                    {/* Gráfico do SJ*/}
-                    <div style={{ width: "500px", height: "300px", margin: "auto" }}>
-                      <Bar 
-                        data={{
-                          labels: Array.from({ length: microciclo }, (_, i) => `Microciclo ${i + 1}`), // Rótulos dinâmicos
-                          datasets: [
-                            {
-                              label: "SJ por Microciclo",
-                              data: sjValores,
-                              backgroundColor: "rgba(241, 177, 16, 0.68)",
-                              borderColor: "rgb(255, 206, 86)",
-                              borderWidth: 1
-                            }
-                          ]
-                        }}
-                        options={{
-                          ...tamanho,
-                          plugins: { title: { display: true, text: "SJ por Microciclo" } }
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <p>A carregar os dados de CMJ e SJ...</p>
-              )}
-            </div>          
-          )}
+          )}          
         </div>
       )}
 
@@ -1927,8 +1694,7 @@ function App() {
             <select value={variavel} onChange={(e) => setVariavel(e.target.value)} style={{ padding: "8px", fontSize: "16px" }}>
               <option value="Wellness">Wellness</option>
               <option value="PSE">PSE</option>
-              <option value="Carga de Treino">Carga de Treino</option>
-              <option value="CMJ & SJ">CMJ & SJ</option>          
+              <option value="Carga de Treino">Carga de Treino</option>         
             </select> 
           </div>
 
@@ -2359,179 +2125,6 @@ function App() {
                 </div>
               </div>
             </div>   
-          )}
-
-          {variavel === "CMJ & SJ" && (
-            <div style={{ marginTop: "30px" }}>
-              <h2>CMJ & SJ</h2>
-
-              {/* Contêiner para os dados lado a lado */}
-              <div style={{ display: "flex", justifyContent: "center", gap: "100px", marginTop: "20px" }}>
-                <div>
-                  {/* Seleção do jogador 1 */}
-                  <label style={{ fontSize: "18px", marginRight: "10px" }}>
-                    Jogador 1:
-                  </label>
-                  <select
-                    value={jogador1}
-                    onChange={(e) => setJogador1(e.target.value)}
-                    style={{ padding: "8px", fontSize: "16px"}}
-                  >
-                    <option value="">Selecione um jogador</option>
-                    {jogadores.map((nome, index) => (
-                      <option key={index} value={nome}>
-                        {nome}
-                      </option>
-                    ))}
-                  </select>
-
-                  {/* Exibir a análise CMJ para o jogador 1 */}
-                  {jogador1 && (
-                    <div style={{ marginTop: "20px" }}>
-                      <h3 style={{ marginTop: "40px" }}>CMJ & SJ da atleta {jogador1}</h3>
-
-                      {cmjValoresJogador1 ? (
-                        <div>                                          
-                          {/* Gráfico acumulado de CMJ */}
-                          <div style={{ width: "500px", height: "300px", margin: "auto" }}>
-                            <Bar 
-                              data={{
-                                labels: Array.from({ length: microciclo }, (_, i) => `Microciclo ${i + 1}`), // Rótulos dinâmicos
-                                datasets: [
-                                  {
-                                    label: "CMJ por Microciclo",
-                                    data: cmjValoresJogador1,
-                                    backgroundColor: "rgba(105, 235, 54, 0.5)",
-                                    borderColor: "rgb(114, 235, 54)",
-                                    borderWidth: 1
-                                  }
-                                ]
-                              }}
-                              options={{
-                                ...tamanho,
-                                plugins: { title: { display: true, text: "CMJ por Microciclo" } }
-                              }}
-                            />
-                          </div>
-                        </div>
-                      ) : (
-                        <p>A carregar os dados do CMJ para o jogador 1...</p>
-                      )}
-
-                      {sjValoresJogador1 ? (
-                        <div>                                          
-                          {/* Gráfico acumulado de SJ */}
-                          <div style={{ width: "500px", height: "300px", margin: "auto" }}>
-                            <Bar 
-                              data={{
-                                labels: Array.from({ length: microciclo }, (_, i) => `Microciclo ${i + 1}`), // Rótulos dinâmicos
-                                datasets: [
-                                  {
-                                    label: "SJ por Microciclo",
-                                    data: sjValoresJogador1,
-                                    backgroundColor: "rgba(241, 177, 16, 0.68)",
-                                    borderColor: "rgb(255, 206, 86)",
-                                    borderWidth: 1
-                                  }
-                                ]
-                              }}
-                              options={{
-                                ...tamanho,
-                                plugins: { title: { display: true, text: "SJ por Microciclo" } }
-                              }}
-                            />
-                          </div>
-                        </div>
-                      ) : (
-                        <p>A carregar os dados do SJ para o jogador 1...</p>
-                      )}                    
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  {/* Seleção do jogador 2 */}
-                  <label style={{ fontSize: "18px", marginRight: "10px" }}>
-                    Jogador 2:
-                  </label>
-                  <select
-                    value={jogador2}
-                    onChange={(e) => setJogador2(e.target.value)}
-                    style={{ padding: "8px", fontSize: "16px"}}
-                  >
-                    <option value="">Selecione um jogador</option>
-                    {jogadores.map((nome, index) => (
-                      <option key={index} value={nome}>
-                        {nome}
-                      </option>
-                    ))}
-                  </select>
-
-                  {/* Exibir a análise CMJ para o jogador 2 */}
-                  {jogador2 && (
-                    <div style={{ marginTop: "20px" }}>
-                      <h3 style={{ marginTop: "40px" }}>CMJ & SJ da atleta {jogador2}</h3>
-
-                      {cmjValoresJogador2 ? (
-                        <div>                                          
-                          {/* Gráfico acumulado de CMJ */}
-                          <div style={{ width: "500px", height: "300px", margin: "auto" }}>
-                            <Bar 
-                              data={{
-                                labels: Array.from({ length: microciclo }, (_, i) => `Microciclo ${i + 1}`), // Rótulos dinâmicos
-                                datasets: [
-                                  {
-                                    label: "CMJ por Microciclo",
-                                    data: cmjValoresJogador2,
-                                    backgroundColor: "rgba(105, 235, 54, 0.5)",
-                                    borderColor: "rgb(114, 235, 54)",
-                                    borderWidth: 1
-                                  }
-                                ]
-                              }}
-                              options={{
-                                ...tamanho,
-                                plugins: { title: { display: true, text: "CMJ por Microciclo" } }
-                              }}
-                            />
-                          </div>
-                        </div>
-                      ) : (
-                        <p>A carregar os dados do CMJ para o jogador 1...</p>
-                      )}
-
-                      {sjValoresJogador2 ? (
-                        <div>                                          
-                          {/* Gráfico acumulado de SJ */}
-                          <div style={{ width: "500px", height: "300px", margin: "auto" }}>
-                            <Bar 
-                              data={{
-                                labels: Array.from({ length: microciclo }, (_, i) => `Microciclo ${i + 1}`), // Rótulos dinâmicos
-                                datasets: [
-                                  {
-                                    label: "SJ por Microciclo",
-                                    data: sjValoresJogador2,
-                                    backgroundColor: "rgba(241, 177, 16, 0.68)",
-                                    borderColor: "rgb(255, 206, 86)",
-                                    borderWidth: 1
-                                  }
-                                ]
-                              }}
-                              options={{
-                                ...tamanho,
-                                plugins: { title: { display: true, text: "SJ por Microciclo" } }
-                              }}
-                            />
-                          </div>
-                        </div>
-                      ) : (
-                        <p>A carregar os dados do SJ para o jogador 2...</p>
-                      )}                    
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
           )}
         </div>
       )}
