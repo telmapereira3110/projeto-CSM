@@ -44,7 +44,7 @@ spreadsheet_service = build('sheets', 'v4', credentials=credentials)
 drive_service = build('drive', 'v3', credentials=credentials)
 
 app = Flask(__name__)
-CORS(app, origins=["https://projeto-csm.vercel.app"]) # Permite que o React acesse a API
+CORS(app, supports_credentials=True, origins=["https://projeto-csm.vercel.app"]) # Permite que o React acesse a API
 
 # Variáveis globais para o cache
 # cache_dados = {
