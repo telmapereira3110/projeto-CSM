@@ -62,15 +62,17 @@ function App() {
   const [zScoreMonotonia, setZScoreMonotonia] = useState(null);
   const [zScoreStrain, setZScoreStrain] = useState(null);
 
+  const API_URL = "https://projeto-csm.onrender.com";
+
 
   // Buscar os jogadores da API Flask quando a página carregar
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/jogadores") // Chama o Flask
+    fetch("${API_URL}/api/jogadores") // Chama o Flask
       .then((response) => response.json())
       .then((data) => setJogadores(data)) // Atualiza a lista de jogadores
       .catch((error) => console.error("Erro ao buscar jogadores:", error));
 
-    fetch("http://127.0.0.1:5000/api/microciclos") // Chama o Flask
+    fetch("${API_URL}/api/microciclos") // Chama o Flask
       .then((response) => response.json())
       .then((data) => setMicrociclos(data)) // Atualiza a lista de jogadores
       .catch((error) => console.error("Erro ao buscar microciclos:", error));
@@ -79,52 +81,52 @@ function App() {
   // Buscar os dados do questionário para o jogador e microciclo selecionado (Análise Individual)
   useEffect(() => {
     if (jogador && microciclo) {
-      fetch(`http://127.0.0.1:5000/api/wellness/${jogador}/${microciclo}`)
+      fetch(`${API_URL}/api/wellness/${jogador}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setWellness(data)) // Atualiza os dados do microciclo
         .catch((error) => console.error("Erro ao buscar questionário:", error));
 
-      fetch(`http://127.0.0.1:5000/api/pse/${jogador}/${microciclo}`)
+      fetch(`${API_URL}/api/pse/${jogador}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setPseData(data))
         .catch((error) => console.error("Erro ao buscar PSE:", error));
 
-      fetch(`http://127.0.0.1:5000/api/carga_interna/${jogador}/${microciclo}`)
+      fetch(`${API_URL}/api/carga_interna/${jogador}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setCargaInternaData(data))
         .catch((error) => console.error("Erro ao buscar Carga Interna:", error));
 
-      fetch(`http://127.0.0.1:5000/api/carga_externa_dt/${jogador}/${microciclo}`)
+      fetch(`${API_URL}/api/carga_externa_dt/${jogador}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setCargaExternaDtData(data))
         .catch((error) => console.error("Erro ao buscar Carga Externa da Distância Total:", error));
 
-      fetch(`http://127.0.0.1:5000/api/carga_externa_hs/${jogador}/${microciclo}`)
+      fetch(`${API_URL}/api/carga_externa_hs/${jogador}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setCargaExternaHsData(data))
         .catch((error) => console.error("Erro ao buscar Carga Externa da Distância em Alta Velocidade:", error));
 
-      fetch(`http://127.0.0.1:5000/api/zscore/acwr_pse/${jogador}/${microciclo}`)
+      fetch(`${API_URL}/api/zscore/acwr_pse/${jogador}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setZScorePSE(data)) 
         .catch((error) => console.error("Erro ao buscar Z-score ACWR PSE:", error));
   
-      fetch(`http://127.0.0.1:5000/api/zscore/acwr_dt/${jogador}/${microciclo}`)
+      fetch(`${API_URL}/api/zscore/acwr_dt/${jogador}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setZScoreDT(data))
         .catch((error) => console.error("Erro ao buscar Z-score ACWR DT:", error));
   
-      fetch(`http://127.0.0.1:5000/api/zscore/wellness/${jogador}/${microciclo}`)
+      fetch(`${API_URL}/api/zscore/wellness/${jogador}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setZScoreWellness(data))
         .catch((error) => console.error("Erro ao buscar Z-score Wellness:", error));
   
-      fetch(`http://127.0.0.1:5000/api/zscore/monotonia/${jogador}/${microciclo}`)
+      fetch(`${API_URL}/api/zscore/monotonia/${jogador}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setZScoreMonotonia(data))
         .catch((error) => console.error("Erro ao buscar Z-score Monotonia:", error));
   
-      fetch(`http://127.0.0.1:5000/api/zscore/strain/${jogador}/${microciclo}`)
+      fetch(`${API_URL}/api/zscore/strain/${jogador}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setZScoreStrain(data))
         .catch((error) => console.error("Erro ao buscar Z-score Strain:", error));
@@ -133,37 +135,37 @@ function App() {
 
   useEffect(()=> {
     if (jogador) {
-      fetch(`http://127.0.0.1:5000/api/racio/${jogador}`)
+      fetch(`${API_URL}/api/racio/${jogador}`)
         .then((response) => response.json())
         .then((data) => setRacioData(data))
         .catch((error) => console.error("Erro ao buscar Racio da Carga Interna:", error));
 
-      fetch(`http://127.0.0.1:5000/api/racio_dt/${jogador}`)
+      fetch(`${API_URL}/api/racio_dt/${jogador}`)
         .then((response) => response.json())
         .then((data) => setRacioDtData(data))
         .catch((error) => console.error("Erro ao buscar Racio da Carga Externa da Distância Total:", error));
       
-      fetch(`http://127.0.0.1:5000/api/racio_hs/${jogador}`)
+      fetch(`${API_URL}/api/racio_hs/${jogador}`)
         .then((response) => response.json())
         .then((data) => setRacioHsData(data))
         .catch((error) => console.error("Erro ao buscar Racio da Carga Externa da Distância em Alta Velocidade:", error));
 
-      fetch(`http://127.0.0.1:5000/api/m_dt/${jogador}`)
+      fetch(`${API_URL}/api/m_dt/${jogador}`)
         .then((response) => response.json())
         .then((data) => setMDtData(data))
         .catch((error) => console.error("Erro ao buscar M% da Carga Externa da Distância Total:", error));
 
-      fetch(`http://127.0.0.1:5000/api/m_hs/${jogador}`)
+      fetch(`${API_URL}/api/m_hs/${jogador}`)
         .then((response) => response.json())
         .then((data) => setMHsData(data))
         .catch((error) => console.error("Erro ao buscar M% da Carga Externa da Distância em Alta Velocidade:", error));
 
-      fetch(`http://127.0.0.1:5000/api/monotonia/${jogador}`)
+      fetch(`${API_URL}/api/monotonia/${jogador}`)
         .then((response) => response.json())
         .then((data) => setMonotoniaData(data))
         .catch((error) => console.error("Erro ao buscar Monotonia:", error));
       
-      fetch(`http://127.0.0.1:5000/api/strain/${jogador}`)
+      fetch(`${API_URL}/api/strain/${jogador}`)
         .then((response) => response.json())
         .then((data) => setStrainData(data))
         .catch((error) => console.error("Erro ao buscar Strain:", error));
@@ -173,27 +175,27 @@ function App() {
   // Buscar os dados do questionário para o jogador 1 e microciclo selecionado (Análise Comparativa)
   useEffect(() => {
     if (jogador1 && microciclo) {
-      fetch(`http://127.0.0.1:5000/api/wellness/${jogador1}/${microciclo}`)
+      fetch(`${API_URL}/api/wellness/${jogador1}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setWellnessJogador1(data)) // Atualiza os dados do microciclo
         .catch((error) => console.error("Erro ao buscar questionário:", error));
 
-      fetch(`http://127.0.0.1:5000/api/pse/${jogador1}/${microciclo}`)
+      fetch(`${API_URL}/api/pse/${jogador1}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setPseDataJogador1(data))
         .catch((error) => console.error("Erro ao buscar PSE:", error));
 
-      fetch(`http://127.0.0.1:5000/api/carga_interna/${jogador1}/${microciclo}`)
+      fetch(`${API_URL}/api/carga_interna/${jogador1}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setCargaInternaDataJogador1(data))
         .catch((error) => console.error("Erro ao buscar Carga Interna:", error));
 
-      fetch(`http://127.0.0.1:5000/api/carga_externa_dt/${jogador1}/${microciclo}`)
+      fetch(`${API_URL}/api/carga_externa_dt/${jogador1}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setCargaExternaDtDataJogador1(data))
         .catch((error) => console.error("Erro ao buscar Carga Externa da Distância Total:", error));
 
-      fetch(`http://127.0.0.1:5000/api/carga_externa_hs/${jogador1}/${microciclo}`)
+      fetch(`${API_URL}/api/carga_externa_hs/${jogador1}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setCargaExternaHsDataJogador1(data))
         .catch((error) => console.error("Erro ao buscar Carga Externa da Distância em Alta Velocidade:", error));      
@@ -202,27 +204,27 @@ function App() {
 
   useEffect(()=> {
     if (jogador1) {
-      fetch(`http://127.0.0.1:5000/api/racio/${jogador1}`)
+      fetch(`${API_URL}/api/racio/${jogador1}`)
         .then((response) => response.json())
         .then((data) => setRacioDataJogador1(data))
         .catch((error) => console.error("Erro ao buscar Racio da Carga Interna:", error));
 
-      fetch(`http://127.0.0.1:5000/api/racio_dt/${jogador1}`)
+      fetch(`${API_URL}/api/racio_dt/${jogador1}`)
         .then((response) => response.json())
         .then((data) => setRacioDtDataJogador1(data))
         .catch((error) => console.error("Erro ao buscar Racio da Carga Externa da Distância Total:", error));
       
-      fetch(`http://127.0.0.1:5000/api/racio_hs/${jogador1}`)
+      fetch(`${API_URL}/api/racio_hs/${jogador1}`)
         .then((response) => response.json())
         .then((data) => setRacioHsDataJogador1(data))
         .catch((error) => console.error("Erro ao buscar Racio da Carga Externa da Distância em Alta Velocidade:", error));
 
-      fetch(`http://127.0.0.1:5000/api/monotonia/${jogador1}`)
+      fetch(`${API_URL}/api/monotonia/${jogador1}`)
         .then((response) => response.json())
         .then((data) => setMonotoniaData(data))
         .catch((error) => console.error("Erro ao buscar Monotonia:", error));
       
-      fetch(`http://127.0.0.1:5000/api/strain/${jogador1}`)
+      fetch(`${API_URL}/api/strain/${jogador1}`)
         .then((response) => response.json())
         .then((data) => setStrainData(data))
         .catch((error) => console.error("Erro ao buscar Strain:", error));
@@ -232,27 +234,27 @@ function App() {
   // Buscar os dados do questionário para o jogador 2 e microciclo selecionado (Análise Comparativa)
   useEffect(() => {
     if (jogador2 && microciclo) {
-      fetch(`http://127.0.0.1:5000/api/wellness/${jogador2}/${microciclo}`)
+      fetch(`${API_URL}/api/wellness/${jogador2}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setWellnessJogador2(data)) // Atualiza os dados do microciclo
         .catch((error) => console.error("Erro ao buscar questionário:", error));
 
-      fetch(`http://127.0.0.1:5000/api/pse/${jogador2}/${microciclo}`)
+      fetch(`${API_URL}/api/pse/${jogador2}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setPseDataJogador2(data))
         .catch((error) => console.error("Erro ao buscar PSE:", error));
 
-      fetch(`http://127.0.0.1:5000/api/carga_interna/${jogador2}/${microciclo}`)
+      fetch(`${API_URL}/api/carga_interna/${jogador2}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setCargaInternaDataJogador2(data))
         .catch((error) => console.error("Erro ao buscar Carga Interna:", error));
 
-      fetch(`http://127.0.0.1:5000/api/carga_externa_dt/${jogador2}/${microciclo}`)
+      fetch(`${API_URL}/api/carga_externa_dt/${jogador2}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setCargaExternaDtDataJogador2(data))
         .catch((error) => console.error("Erro ao buscar Carga Externa da Distância Total:", error));
 
-      fetch(`http://127.0.0.1:5000/api/carga_externa_hs/${jogador2}/${microciclo}`)
+      fetch(`${API_URL}/api/carga_externa_hs/${jogador2}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setCargaExternaHsDataJogador2(data))
         .catch((error) => console.error("Erro ao buscar Carga Externa da Distância em Alta Velocidade:", error));      
@@ -261,27 +263,27 @@ function App() {
 
   useEffect(()=> {
     if (jogador2) {
-      fetch(`http://127.0.0.1:5000/api/racio/${jogador2}`)
+      fetch(`${API_URL}/api/racio/${jogador2}`)
         .then((response) => response.json())
         .then((data) => setRacioDataJogador2(data))
         .catch((error) => console.error("Erro ao buscar Racio da Carga Interna:", error));
 
-      fetch(`http://127.0.0.1:5000/api/racio_dt/${jogador2}`)
+      fetch(`${API_URL}/api/racio_dt/${jogador2}`)
         .then((response) => response.json())
         .then((data) => setRacioDtDataJogador2(data))
         .catch((error) => console.error("Erro ao buscar Racio da Carga Externa da Distância Total:", error));
       
-      fetch(`http://127.0.0.1:5000/api/racio_hs/${jogador2}`)
+      fetch(`${API_URL}/api/racio_hs/${jogador2}`)
         .then((response) => response.json())
         .then((data) => setRacioHsDataJogador2(data))
         .catch((error) => console.error("Erro ao buscar Racio da Carga Externa da Distância em Alta Velocidade:", error));      
 
-      fetch(`http://127.0.0.1:5000/api/monotonia/${jogador2}`)
+      fetch(`${API_URL}/api/monotonia/${jogador2}`)
         .then((response) => response.json())
         .then((data) => setMonotoniaData(data))
         .catch((error) => console.error("Erro ao buscar Monotonia:", error));
       
-      fetch(`http://127.0.0.1:5000/api/strain/${jogador2}`)
+      fetch(`${API_URL}/api/strain/${jogador2}`)
         .then((response) => response.json())
         .then((data) => setStrainData(data))
         .catch((error) => console.error("Erro ao buscar Strain:", error));
