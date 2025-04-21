@@ -67,12 +67,12 @@ function App() {
 
   // Buscar os jogadores da API Flask quando a página carregar
   useEffect(() => {
-    fetch("${API_URL}/api/jogadores") // Chama o Flask
+    fetch(`${API_URL}/api/jogadores`) // Chama o Flask
       .then((response) => response.json())
       .then((data) => setJogadores(data)) // Atualiza a lista de jogadores
       .catch((error) => console.error("Erro ao buscar jogadores:", error));
 
-    fetch("${API_URL}/api/microciclos") // Chama o Flask
+    fetch(`${API_URL}/api/microciclos`) // Chama o Flask
       .then((response) => response.json())
       .then((data) => setMicrociclos(data)) // Atualiza a lista de jogadores
       .catch((error) => console.error("Erro ao buscar microciclos:", error));
