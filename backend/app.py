@@ -575,6 +575,16 @@ def get_z_score(jogador, microciclo, variavel):
         "z_score": z_score
     })
 
+@app.route('/api/users')
+def get_user_data():
+    data = {'key': 'value'}
+    response = jsonify(data)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    return response
+
 
 # Rota para buscar jogadores
 @app.route('/api/jogadores', methods=['GET'])
