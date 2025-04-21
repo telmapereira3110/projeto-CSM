@@ -1161,7 +1161,7 @@ function App() {
           </label>
           <select
             value={microciclo}
-            onChange={(e) => setMicrociclo(e.target.value)}
+            onChange={(e) => setMicrociclo(parseInt(e.target.value))}
             style={{ padding: "8px", fontSize: "16px" }}
           >
             {microciclos.map((mc) => (
