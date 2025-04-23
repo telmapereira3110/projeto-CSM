@@ -1,8 +1,9 @@
 from __future__ import print_function
 import pandas as pd
 from datetime import datetime
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
+from urllib.parse import unquote
 import numpy as np
 from auth import spreadsheet_service
 from auth import drive_service
@@ -577,188 +578,288 @@ def get_z_score(jogador, microciclo, variavel):
 
 @app.route('/api/users')
 def get_user_data():
-    data = {'key': 'value'}
-    response = jsonify(data)
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
-    response.headers.add('Access-Control-Allow-Credentials', 'true')
-    return response
+    try: 
+        data = {'key': 'value'}
+        response = jsonify(data)
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        return response
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+
+def decode_nome(nome):
+    return unquote(nome)
 
 
 # Rota para buscar jogadores
 @app.route('/api/jogadores', methods=['GET'])
 def get_jogadores():
-    _, jogadores_unicos = carregar_dados_wellness()  # Carregar os dados atualizados
-    return jsonify(jogadores_unicos)
+    try:
+        _, jogadores_unicos = carregar_dados_wellness()  # Carregar os dados atualizados
+        return jsonify(jogadores_unicos)
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+
 
 # Rota para buscar microciclos
 @app.route('/api/microciclos', methods=['GET'])
 def get_microciclos():
-    # Carregar os dados do Google Sheets ou do arquivo Excel
-    dados_wellness, _ = carregar_dados_wellness()
+    try: 
+        # Carregar os dados do Google Sheets ou do arquivo Excel
+        dados_wellness, _ = carregar_dados_wellness()
 
-    # Obter todos os microciclos únicos dos jogadores
-    microciclos = set()
+        # Obter todos os microciclos únicos dos jogadores
+        microciclos = set()
 
-    # Verifique o que você está recebendo em `dados_wellness`
-    print(f"Dados de wellness: {dados_wellness}")
+        for jogador in dados_wellness:
+            microciclos.update(dados_wellness[jogador].keys())
 
-    for jogador in dados_wellness:
-        microciclos.update(dados_wellness[jogador].keys())
+        # Ordenar os microciclos numericamente
+        microciclos = sorted(microciclos, key=int)
 
-    # Ordenar os microciclos numericamente
-    microciclos = sorted(microciclos, key=int)
-
-    return jsonify(microciclos)
+        return jsonify(microciclos)
+        
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+        
 
 # Rota para buscar os dados wellness
 @app.route('/api/wellness/<jogador>/<int:microciclo>', methods=['GET'])
 def get_wellness(jogador, microciclo):
-    dados_wellness, _= carregar_dados_wellness()
+    try:
+        jogador = decode_nome(jogador)
+        dados_wellness, _= carregar_dados_wellness()
 
-    # Garantir que o microciclo é tratado como string para manter o formato original
-    #microciclo = f"microciclo_{microciclo}"
-
-    if jogador in dados_wellness and microciclo in dados_wellness[jogador]:
-        return jsonify(dados_wellness[jogador][microciclo])
-    else:
-        return jsonify({"erro": "Jogador ou Microciclo não encontrado"}), 404
+        if jogador in dados_wellness and microciclo in dados_wellness[jogador]:
+            return jsonify(dados_wellness[jogador][microciclo])
+        else:
+            return jsonify({"erro": "Jogador ou Microciclo não encontrado"}), 404
     
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+        
 
 # Rota para buscar os dados da PSE de um jogador e microciclo específico
 @app.route('/api/pse/<jogador>/<int:microciclo>', methods=['GET'])
 def get_pse(jogador, microciclo):
-    dados_pse, _, _, _ = carregar_dados_pse_carga_treino()
+    try:
+        jogador = decode_nome(jogador)
+        dados_pse, _, _, _ = carregar_dados_pse_carga_treino()
 
-    if jogador in dados_pse and microciclo in dados_pse[jogador]:
-        return jsonify(dados_pse[jogador][microciclo])
-    else:
-        return jsonify({"erro": "Jogador ou Microciclo não encontrado"}), 404
-    
+        if jogador in dados_pse and microciclo in dados_pse[jogador]:
+            return jsonify(dados_pse[jogador][microciclo])
+        else:
+            return jsonify({"erro": "Jogador ou Microciclo não encontrado"}), 404
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+        
 
 # Rota para buscar os dados da Carga Interna de um jogador e microciclo específico
 @app.route('/api/carga_interna/<jogador>/<int:microciclo>', methods=['GET'])
 def get_carga_interna(jogador, microciclo):
-    _, carga_interna, _, _ = carregar_dados_pse_carga_treino()
+    try:
+        jogador = decode_nome(jogador)
+        _, carga_interna, _, _ = carregar_dados_pse_carga_treino()
 
-    if jogador in carga_interna and microciclo in carga_interna[jogador]:
-        return jsonify(carga_interna[jogador][microciclo])
-    else:
-        return jsonify({"erro": "Jogador ou Microciclo não encontrado"}), 404
+        if jogador in carga_interna and microciclo in carga_interna[jogador]:
+            return jsonify(carga_interna[jogador][microciclo])
+        else:
+            return jsonify({"erro": "Jogador ou Microciclo não encontrado"}), 404
     
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
 
 # Rota para buscar o rácio carga aguda/crónica para a Carga Interna de um jogador
 @app.route('/api/racio/<jogador>')
 def get_racio(jogador):
-    racio_carga_interna, _, _, _, _ = calcular_metricas_carga_treino(jogador)
+    try:
+        jogador = decode_nome(jogador)
+        racio_carga_interna, _, _, _, _ = calcular_metricas_carga_treino(jogador)
 
-    if racio_carga_interna:
-        return jsonify(racio_carga_interna)
-    else:
-        return jsonify({"erro": "Jogador não encontrado ou sem dados"}), 404
+        if racio_carga_interna:
+            return jsonify(racio_carga_interna)
+        else:
+            return jsonify({"erro": "Jogador não encontrado ou sem dados"}), 404
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+        
     
 # Rota para buscar os dados da Carga Externa em DT de um jogador e microciclo específico
 @app.route('/api/carga_externa_dt/<jogador>/<int:microciclo>')
 def get_carga_externa_dt(jogador, microciclo):
-    _, _, carga_externa_dt, _ = carregar_dados_pse_carga_treino()
-    if jogador in carga_externa_dt and microciclo in carga_externa_dt[jogador]:
-        return jsonify(carga_externa_dt[jogador][microciclo])
-    else:
-        return jsonify({"erro": "Jogador ou Microciclo não encontrado"}), 404
+    try:
+        jogador = decode_nome(jogador)
+        _, _, carga_externa_dt, _ = carregar_dados_pse_carga_treino()
+        if jogador in carga_externa_dt and microciclo in carga_externa_dt[jogador]:
+            return jsonify(carga_externa_dt[jogador][microciclo])
+        else:
+            return jsonify({"erro": "Jogador ou Microciclo não encontrado"}), 404
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+        
     
 # Rota para buscar o rácio carga aguda/crónica para a Carga Externa DT de um jogador
 @app.route('/api/racio_dt/<jogador>')
 def get_racio_dt(jogador):
-    _, racio_carga_externa_dt, _, _, _ = calcular_metricas_carga_treino(jogador)
+    try:
+        jogador = decode_nome(jogador)
+        _, racio_carga_externa_dt, _, _, _ = calcular_metricas_carga_treino(jogador)
 
-    if racio_carga_externa_dt:
-        return jsonify(racio_carga_externa_dt)
-    else:
-        return jsonify({"erro": "Jogador não encontrado ou sem dados"}), 404
+        if racio_carga_externa_dt:
+            return jsonify(racio_carga_externa_dt)
+        else:
+            return jsonify({"erro": "Jogador não encontrado ou sem dados"}), 404
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+        
     
 # Rota para buscar o M% para a Carga Externa DT de um jogador
 @app.route('/api/m_dt/<jogador>')
 def get_m_dt(jogador):
-    _, _, m_porcento_dt, _, _ = calcular_metricas_carga_treino(jogador)
+    try:
+        jogador = decode_nome(jogador)
+        _, _, m_porcento_dt, _, _ = calcular_metricas_carga_treino(jogador)
 
-    if m_porcento_dt:        
-        return jsonify(m_porcento_dt)
-    else:
-        return jsonify({"erro": "Jogador não encontrado"}), 404 
+        if m_porcento_dt:        
+            return jsonify(m_porcento_dt)
+        else:
+            return jsonify({"erro": "Jogador não encontrado"}), 404 
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+        
 
 # Rota para buscar os dados da Carga Externa em HS de um jogador e microciclo específico
 @app.route('/api/carga_externa_hs/<jogador>/<int:microciclo>')
 def get_carga_externa_hs(jogador, microciclo):
-    _, _, _, carga_externa_hs = carregar_dados_pse_carga_treino()
-    if jogador in carga_externa_hs and microciclo in carga_externa_hs[jogador]:
-        return jsonify(carga_externa_hs[jogador][microciclo])
-    else:
-        return jsonify({"erro": "Jogador ou Microciclo não encontrado"}), 404
+    try: 
+        jogador = decode_nome(jogador)
+        _, _, _, carga_externa_hs = carregar_dados_pse_carga_treino()
+        if jogador in carga_externa_hs and microciclo in carga_externa_hs[jogador]:
+            return jsonify(carga_externa_hs[jogador][microciclo])
+        else:
+            return jsonify({"erro": "Jogador ou Microciclo não encontrado"}), 404
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+        
     
 # Rota para buscar o rácio carga aguda/crónica para a Carga Externa HS de um jogador
 @app.route('/api/racio_hs/<jogador>')
 def get_racio_hs(jogador):
-    _, _, _, racio_carga_externa_hs, _ = calcular_metricas_carga_treino(jogador)
+    try: 
+        jogador = decode_nome(jogador)
+        _, _, _, racio_carga_externa_hs, _ = calcular_metricas_carga_treino(jogador)
 
-    if racio_carga_externa_hs:
-        return jsonify(racio_carga_externa_hs)
-    else:
-        return jsonify({"erro": "Jogador não encontrado ou sem dados"}), 404
+        if racio_carga_externa_hs:
+            return jsonify(racio_carga_externa_hs)
+        else:
+            return jsonify({"erro": "Jogador não encontrado ou sem dados"}), 404
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
     
 # Rota para buscar o M% para a Carga Externa DT de um jogador
 @app.route('/api/m_hs/<jogador>')
 def get_m_hs(jogador):
-    _, _, _, _, m_porcento_hs = calcular_metricas_carga_treino(jogador)
+    try: 
+        jogador = decode_nome(jogador)
+        _, _, _, _, m_porcento_hs = calcular_metricas_carga_treino(jogador)
 
-    if m_porcento_hs:        
-        return jsonify(m_porcento_hs)
-    else:
-        return jsonify({"erro": "Jogador não encontrado"}), 404
+        if m_porcento_hs:        
+            return jsonify(m_porcento_hs)
+        else:
+            return jsonify({"erro": "Jogador não encontrado"}), 404
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+        
     
 # Rota para buscar os dados da Carga Interna de um jogador e microciclo específico
 @app.route('/api/monotonia/<jogador>')
 def get_monotonia(jogador):
-    _, carga_interna, _, _ = carregar_dados_pse_carga_treino()  # Carregar os dados da carga interna
-    if jogador in carga_interna:
-        monotonia_micro, _ = calcular_monotonia_strain(jogador, carga_interna)
-        return jsonify(monotonia_micro)
-    else:
-        return jsonify({"erro": "Jogador não encontrado"}), 404
+    try: 
+        jogador = decode_nome(jogador)
+        _, carga_interna, _, _ = carregar_dados_pse_carga_treino()  # Carregar os dados da carga interna
+        if jogador in carga_interna:
+            monotonia_micro, _ = calcular_monotonia_strain(jogador, carga_interna)
+            return jsonify(monotonia_micro)
+        else:
+            return jsonify({"erro": "Jogador não encontrado"}), 404
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+        
     
 # Rota para buscar os dados da Strain de um jogador específico
 @app.route('/api/strain/<jogador>')
 def get_strain(jogador):
-    _, carga_interna, _, _ = carregar_dados_pse_carga_treino()  # Carregar os dados da carga interna
-    if jogador in carga_interna:
-        _, strain_micro = calcular_monotonia_strain(jogador, carga_interna)
-        return jsonify(strain_micro)
-    else:
-        return jsonify({"erro": "Jogador não encontrado"}), 404
+    try: 
+        jogador = decode_nome(jogador)
+        _, carga_interna, _, _ = carregar_dados_pse_carga_treino()  # Carregar os dados da carga interna
+        if jogador in carga_interna:
+            _, strain_micro = calcular_monotonia_strain(jogador, carga_interna)
+            return jsonify(strain_micro)
+        else:
+            return jsonify({"erro": "Jogador não encontrado"}), 404
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+        
     
 @app.route('/api/zscore/acwr_pse/<jogador>/<int:microciclo>', methods=['GET'])
 def zscore_acwr_pse(jogador, microciclo):
-    return get_z_score(jogador, microciclo, "ACWR PSE")
+    try:
+        jogador = decode_nome(jogador)
+        return get_z_score(jogador, microciclo, "ACWR PSE")
+        
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
 
 
 @app.route('/api/zscore/acwr_dt/<jogador>/<int:microciclo>', methods=['GET'])
 def zscore_acwr_dt(jogador, microciclo):
-    return get_z_score(jogador, microciclo, "ACWR DT")
+    try:
+        jogador = decode_nome(jogador)
+        return get_z_score(jogador, microciclo, "ACWR DT")
 
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+    
 
 @app.route('/api/zscore/wellness/<jogador>/<int:microciclo>', methods=['GET'])
 def zscore_wellness(jogador, microciclo):
-    return get_z_score(jogador, microciclo, "Wellness")
+    try:
+        jogador = decode_nome(jogador)
+        return get_z_score(jogador, microciclo, "Wellness")
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
 
 
 @app.route('/api/zscore/monotonia/<jogador>/<int:microciclo>', methods=['GET'])
 def zscore_monotonia(jogador, microciclo):
-    return get_z_score(jogador, microciclo, "Monotonia")
+    try:
+        jogador = decode_nome(jogador)
+        return get_z_score(jogador, microciclo, "Monotonia")
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
 
 
 @app.route('/api/zscore/strain/<jogador>/<int:microciclo>', methods=['GET'])
 def zscore_strain(jogador, microciclo):
-    return get_z_score(jogador, microciclo, "Strain")
+    try:
+        jogador = decode_nome(jogador)
+        return get_z_score(jogador, microciclo, "Strain")
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
     
     
 # Rota para limpar o cache manualmente
