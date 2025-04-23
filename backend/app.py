@@ -15,8 +15,6 @@ import os
 from google.oauth2 import service_account
 from dotenv import load_dotenv
 
-# Carregar variáveis de ambiente do arquivo .env (se estiver rodando localmente)
-load_dotenv()  # Se você estiver testando localmente, coloque as variáveis no arquivo .env
 
 # Carregar as credenciais do Google a partir das variáveis de ambiente
 google_credentials = {
@@ -46,17 +44,6 @@ drive_service = build('drive', 'v3', credentials=credentials)
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "https://projeto-csm.vercel.app"}})# Permite que o React acesse a API
-
-# Variáveis globais para o cache
-# cache_dados = {
-#    "timestamp_pse": None,
-#    "dados_pse": None,
-#    "timestamp_wellness": None,
-#    "dados_wellness": None
-#}
-
-# Tempo de validade do cache (ex: 10 minutos)
-# CACHE_TTL = timedelta(minutes=10)
 
 # Função para chamada com reintento e espera
 def chamada_com_espera(request, tentativas_max=5, tempo_espera=60):
@@ -109,12 +96,6 @@ def calcular_microciclo(data, primeira_data):
     return semanas_passadas + 2
 
 def carregar_dados_wellness():
-    now = datetime.now()
-
-    # Verifica se já temos dados no cache e se estão dentro do TTL
-    #if cache_dados["dados_wellness"] is not None and cache_dados["timestamp_wellness"] is not None:
-        #if now - cache_dados["timestamp_wellness"] < CACHE_TTL:
-            #return cache_dados["dados_wellness"]
         
     range_name = 'dados_wellness!A:H'
     spreadsheet_id = '15VCHZTSwrCecWMWCyxJ5PSS5nxXRXsz6rKw_xK5aBxw'
@@ -169,10 +150,6 @@ def carregar_dados_wellness():
         # Lista única de jogadores
         jogadores_unicos = list(dados_wellness.keys())
 
-        # Atualiza o cache
-        #cache_dados["dados_wellness"] = dados_wellness
-        #cache_dados["timestamp_wellness"] = datetime.now()
-
         return dados_wellness, jogadores_unicos, nomes_formatados
 
     except HttpError as error:
@@ -185,12 +162,6 @@ def carregar_dados_wellness():
 
 # Função para carregar dados da PSE, da Carga Interna e da Carga Externa em Distância Total (DT) e em Distância a Alta Velocidade (HS)
 def carregar_dados_pse_carga_treino():
-    now = datetime.now()
-
-    # Verifica se já temos dados no cache e se estão dentro do TTL
-    #if cache_dados["dados_pse"] is not None and cache_dados["timestamp_pse"] is not None:
-        #if now - cache_dados["timestamp_pse"] < CACHE_TTL:
-            #return cache_dados["dados_pse"]
         
     range_name ='gpexe_0125!A:Y'
     spreadsheet_id = '1RSBz3OHn7b-G2qD9aRh9Fb69ipUiKIev_wQoSjm4j7k'
@@ -307,10 +278,6 @@ def carregar_dados_pse_carga_treino():
                 'data_treino': data_str,
                 'distancia_hs': round(hs_total, 2)
             })
-
-            # Atualiza o cache
-        #cache_dados["dados_pse"] = ( dados_pse, carga_interna, carga_externa_dt, carga_externa_hs)
-        #cache_dados["timestamp_pse"] = datetime.now()
 
         return dados_pse, carga_interna, carga_externa_dt, carga_externa_hs
     
@@ -843,15 +810,6 @@ def zscore_strain(jogador, microciclo):
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
     
-    
-# Rota para limpar o cache manualmente
-#@app.route('/api/cache/clear', methods=['POST'])
-#def clear_cache():
-    #cache_dados["dados_pse"] = None
-    #cache_dados["timestamp_pse"] = None
-    #cache_dados["dados_wellness"] = None
-    #cache_dados["timestamp_wellness"] = None
-    #return jsonify({"mensagem": "Cache limpo com sucesso."})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Usar a porta definida pelo Render ou 5000 por padrão
