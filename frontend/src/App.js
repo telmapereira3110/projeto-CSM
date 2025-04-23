@@ -1719,9 +1719,9 @@ function App() {
                     style={{ padding: "8px", fontSize: "16px"}}
                   >
                     <option value="">Selecione um jogador</option>
-                    {jogadores.map((nome, index) => (
-                      <option key={index} value={nome}>
-                        {nome}
+                    {Array.isArray(jogadores) && jogadores.map((jogador, index) => (
+                      <option key={index} value={jogador.id}>
+                        {jogador.nome}
                       </option>
                     ))}
                   </select>
@@ -1756,9 +1756,9 @@ function App() {
                     style={{ padding: "8px", fontSize: "16px"}}
                   >
                     <option value="">Selecione um jogador</option>
-                    {jogadores.map((nome, index) => (
-                      <option key={index} value={nome}>
-                        {nome}
+                    {Array.isArray(jogadores) && jogadores.map((jogador, index) => (
+                      <option key={index} value={jogador.id}>
+                        {jogador.nome}
                       </option>
                     ))}
                   </select>
@@ -1802,9 +1802,9 @@ function App() {
                     style={{ padding: "8px", fontSize: "16px"}}
                   >
                     <option value="">Selecione um jogador</option>
-                    {jogadores.map((nome, index) => (
-                      <option key={index} value={nome}>
-                        {nome}
+                    {Array.isArray(jogadores) && jogadores.map((jogador, index) => (
+                      <option key={index} value={jogador.id}>
+                        {jogador.nome}
                       </option>
                     ))}
                   </select>
@@ -1839,9 +1839,9 @@ function App() {
                     style={{ padding: "8px", fontSize: "16px"}}
                   >
                     <option value="">Selecione um jogador</option>
-                    {jogadores.map((nome, index) => (
-                      <option key={index} value={nome}>
-                        {nome}
+                    {Array.isArray(jogadores) && jogadores.map((jogador, index) => (
+                      <option key={index} value={jogador.id}>
+                        {jogador.nome}
                       </option>
                     ))}
                   </select>
@@ -1885,9 +1885,9 @@ function App() {
                     style={{ padding: "8px", fontSize: "16px"}}
                   >
                     <option value="">Selecione um jogador</option>
-                    {jogadores.map((nome, index) => (
-                      <option key={index} value={nome}>
-                        {nome}
+                    {Array.isArray(jogadores) && jogadores.map((jogador, index) => (
+                      <option key={index} value={jogador.id}>
+                        {jogador.nome}
                       </option>
                     ))}
                   </select>
@@ -2012,9 +2012,9 @@ function App() {
                     style={{ padding: "8px", fontSize: "16px"}}
                   >
                     <option value="">Selecione um jogador</option>
-                    {jogadores.map((nome, index) => (
-                      <option key={index} value={nome}>
-                        {nome}
+                    {Array.isArray(jogadores) && jogadores.map((jogador, index) => (
+                      <option key={index} value={jogador.id}>
+                        {jogador.nome}
                       </option>
                     ))}
                   </select>
