@@ -347,11 +347,13 @@ function App() {
 
     // Itera pelos dias do microciclo e coleta todas as datas de treino
     Object.values(pseData).forEach((treinos) => {
-      treinos.forEach((treino) => {
-        if (treino.data_treino) {
-          datas.push(treino.data_treino);
-        }
-      });
+      if (Array.isArray(treinos)) {
+        treinos.forEach((treino) => {
+          if (treino?.data_treino) {
+            datas.push(treino.data_treino);
+          }
+        });
+      }
     });
 
     if (datas.length === 0) return ""; // Se não houver dados
