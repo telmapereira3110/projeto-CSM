@@ -139,9 +139,13 @@ def carregar_dados_wellness():
         primeira_data_wellness = df['Carimbo de data/hora'].min()
 
         dados_wellness = {}
+        nomes_formatados= {}
 
         for _, linha in df.iterrows():
-            jogador = str(linha.get('Nome', '')).replace(" ", "").lower()
+            nome_original = linha.get('Nome', '').strip()
+            jogador = nome_original.replace(" ", "").lower()
+            nomes_formatados[jogador] = nome_original
+            
             data = linha['Carimbo de data/hora']
             data_str = data.strftime('%Y-%m-%d')  # Converter a data para string no formato YYYY-MM-DD
             dia_da_semana = obter_dia_da_semana(data)
@@ -169,9 +173,7 @@ def carregar_dados_wellness():
         #cache_dados["dados_wellness"] = dados_wellness
         #cache_dados["timestamp_wellness"] = datetime.now()
 
-        print(f"Retornando dados: {dados_wellness} e jogadores: {jogadores_unicos}")  # Adicionando print para depuração
-
-        return dados_wellness, jogadores_unicos
+        return dados_wellness, jogadores_unicos, nomes_formatados
 
     except HttpError as error:
         if error.resp.status != 429:
@@ -593,8 +595,14 @@ def get_user_data():
 @app.route('/api/jogadores', methods=['GET'])
 def get_jogadores():
     try:
-        _, jogadores_unicos = carregar_dados_wellness()  # Carregar os dados atualizados
-        return jsonify(jogadores_unicos)
+        _, jogadores_unicos, nomes_formatados = carregar_dados_wellness()  # Carregar os dados atualizados
+        lista_jogadores = [
+            {
+                "id": jogador,
+                "nome": nomes_formatados[jogador]
+            } for jogador in jogadores_unicos
+        ]
+        return jsonify(lista_formatada)
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
