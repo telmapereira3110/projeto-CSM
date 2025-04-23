@@ -602,7 +602,7 @@ def get_jogadores():
                 "nome": nomes_formatados[jogador]
             } for jogador in jogadores_unicos
         ]
-        return jsonify(lista_formatada)
+        return jsonify(lista_jogadores)
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
