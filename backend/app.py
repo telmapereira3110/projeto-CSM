@@ -466,7 +466,7 @@ def criar_dados():
     dados = {}
 
     # Carregar os dados de wellness e carga interna
-    dados_wellness, _ = carregar_dados_wellness()  # Carregar dados de wellness
+    dados_wellness, _, _ = carregar_dados_wellness()  # Carregar dados de wellness
     _, carga_interna, _, _ = carregar_dados_pse_carga_treino()  # Carregar dados de carga interna
 
     # Iterar sobre todos os jogadores
@@ -612,7 +612,7 @@ def get_jogadores():
 def get_microciclos():
     try: 
         # Carregar os dados do Google Sheets ou do arquivo Excel
-        dados_wellness, _ = carregar_dados_wellness()
+        dados_wellness, _, _ = carregar_dados_wellness()
 
         # Obter todos os microciclos únicos dos jogadores
         microciclos = set()
@@ -633,7 +633,7 @@ def get_microciclos():
 @app.route('/api/wellness/<jogador>/<int:microciclo>', methods=['GET'])
 def get_wellness(jogador, microciclo):
     try:
-        dados_wellness, _= carregar_dados_wellness()
+        dados_wellness, _, _= carregar_dados_wellness()
 
         if jogador in dados_wellness and microciclo in dados_wellness[jogador]:
             return jsonify(dados_wellness[jogador][microciclo])
