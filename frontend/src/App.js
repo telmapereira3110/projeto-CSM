@@ -82,7 +82,7 @@ function App() {
   useEffect(() => {
     console.log('Jogador:', jogador);  // Deve ser o id do jogador, por exemplo, "sissefatumata"
     console.log('Microciclo:', microciclo);  // Deve ser um número ou string representando o microciclo
-    if (jogador && microciclo) {
+    if (jogador !== "" && microciclo) {
       fetch(`${API_URL}/api/wellness/${jogador}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setWellness(data)) // Atualiza os dados do microciclo
@@ -136,7 +136,7 @@ function App() {
   }, [jogador, microciclo]); // Executa sempre que o jogador ou microciclo mudar
 
   useEffect(()=> {
-    if (jogador) {
+    if (jogador !== "") {
       fetch(`${API_URL}/api/racio/${jogador}`)
         .then((response) => response.json())
         .then((data) => setRacioData(data))
@@ -176,7 +176,7 @@ function App() {
 
   // Buscar os dados do questionário para o jogador 1 e microciclo selecionado (Análise Comparativa)
   useEffect(() => {
-    if (jogador1 && microciclo) {
+    if (jogador1 !=="" && microciclo) {
       fetch(`${API_URL}/api/wellness/${jogador1}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setWellnessJogador1(data)) // Atualiza os dados do microciclo
@@ -205,7 +205,7 @@ function App() {
   }, [jogador1, microciclo]); // Executa sempre que o jogador ou microciclo mudar
 
   useEffect(()=> {
-    if (jogador1) {
+    if (jogador1 !=="") {
       fetch(`${API_URL}/api/racio/${jogador1}`)
         .then((response) => response.json())
         .then((data) => setRacioDataJogador1(data))
@@ -235,7 +235,7 @@ function App() {
 
   // Buscar os dados do questionário para o jogador 2 e microciclo selecionado (Análise Comparativa)
   useEffect(() => {
-    if (jogador2 && microciclo) {
+    if (jogador2 !=="" && microciclo) {
       fetch(`${API_URL}/api/wellness/${jogador2}/${microciclo}`)
         .then((response) => response.json())
         .then((data) => setWellnessJogador2(data)) // Atualiza os dados do microciclo
@@ -264,7 +264,7 @@ function App() {
   }, [jogador2, microciclo]); // Executa sempre que o jogador ou microciclo mudar
 
   useEffect(()=> {
-    if (jogador2) {
+    if (jogador2 !=="") {
       fetch(`${API_URL}/api/racio/${jogador2}`)
         .then((response) => response.json())
         .then((data) => setRacioDataJogador2(data))
