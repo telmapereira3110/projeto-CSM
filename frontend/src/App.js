@@ -1148,9 +1148,9 @@ function App() {
             style={{ padding: "8px", fontSize: "16px"}}
           >
             <option value="">Selecione um jogador</option>
-            {jogadores.map((nome, index) => (
-              <option key={index} value={nome}>
-                {nome}
+            {jogadores.map((j, index) => (
+              <option key={index} value={j.id}>
+                {j.nome}
               </option>
             ))}
           </select>
