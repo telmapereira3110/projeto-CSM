@@ -141,7 +141,7 @@ def carregar_dados_wellness():
         dados_wellness = {}
 
         for _, linha in df.iterrows():
-            jogador = linha.get('Nome', '')
+            jogador = str(linha.get('Nome', '')).replace(" ", "").lower()
             data = linha['Carimbo de data/hora']
             data_str = data.strftime('%Y-%m-%d')  # Converter a data para string no formato YYYY-MM-DD
             dia_da_semana = obter_dia_da_semana(data)
@@ -231,7 +231,7 @@ def carregar_dados_pse_carga_treino():
                 return 0.0 
 
         for _, linha in df.iterrows():
-            jogador = str(linha.get('athlete', '').strip())
+            jogador = str(linha.get('athlete', '')).replace(" ", "").lower()
             data = linha['start date/time']
             data_str = data.strftime('%Y-%m-%d')  # Converter a data para string no formato YYYY-MM-DD
             dia_da_semana = obter_dia_da_semana(data)
@@ -589,10 +589,6 @@ def get_user_data():
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
-def decode_nome(nome):
-    return unquote(nome)
-
-
 # Rota para buscar jogadores
 @app.route('/api/jogadores', methods=['GET'])
 def get_jogadores():
@@ -629,7 +625,6 @@ def get_microciclos():
 @app.route('/api/wellness/<jogador>/<int:microciclo>', methods=['GET'])
 def get_wellness(jogador, microciclo):
     try:
-        jogador = decode_nome(jogador)
         dados_wellness, _= carregar_dados_wellness()
 
         if jogador in dados_wellness and microciclo in dados_wellness[jogador]:
@@ -645,7 +640,6 @@ def get_wellness(jogador, microciclo):
 @app.route('/api/pse/<jogador>/<int:microciclo>', methods=['GET'])
 def get_pse(jogador, microciclo):
     try:
-        jogador = decode_nome(jogador)
         dados_pse, _, _, _ = carregar_dados_pse_carga_treino()
 
         if jogador in dados_pse and microciclo in dados_pse[jogador]:
@@ -660,7 +654,6 @@ def get_pse(jogador, microciclo):
 @app.route('/api/carga_interna/<jogador>/<int:microciclo>', methods=['GET'])
 def get_carga_interna(jogador, microciclo):
     try:
-        jogador = decode_nome(jogador)
         _, carga_interna, _, _ = carregar_dados_pse_carga_treino()
 
         if jogador in carga_interna and microciclo in carga_interna[jogador]:
@@ -675,7 +668,6 @@ def get_carga_interna(jogador, microciclo):
 @app.route('/api/racio/<jogador>')
 def get_racio(jogador):
     try:
-        jogador = decode_nome(jogador)
         racio_carga_interna, _, _, _, _ = calcular_metricas_carga_treino(jogador)
 
         if racio_carga_interna:
@@ -691,7 +683,6 @@ def get_racio(jogador):
 @app.route('/api/carga_externa_dt/<jogador>/<int:microciclo>')
 def get_carga_externa_dt(jogador, microciclo):
     try:
-        jogador = decode_nome(jogador)
         _, _, carga_externa_dt, _ = carregar_dados_pse_carga_treino()
         if jogador in carga_externa_dt and microciclo in carga_externa_dt[jogador]:
             return jsonify(carga_externa_dt[jogador][microciclo])
@@ -706,7 +697,6 @@ def get_carga_externa_dt(jogador, microciclo):
 @app.route('/api/racio_dt/<jogador>')
 def get_racio_dt(jogador):
     try:
-        jogador = decode_nome(jogador)
         _, racio_carga_externa_dt, _, _, _ = calcular_metricas_carga_treino(jogador)
 
         if racio_carga_externa_dt:
@@ -722,7 +712,6 @@ def get_racio_dt(jogador):
 @app.route('/api/m_dt/<jogador>')
 def get_m_dt(jogador):
     try:
-        jogador = decode_nome(jogador)
         _, _, m_porcento_dt, _, _ = calcular_metricas_carga_treino(jogador)
 
         if m_porcento_dt:        
@@ -738,7 +727,6 @@ def get_m_dt(jogador):
 @app.route('/api/carga_externa_hs/<jogador>/<int:microciclo>')
 def get_carga_externa_hs(jogador, microciclo):
     try: 
-        jogador = decode_nome(jogador)
         _, _, _, carga_externa_hs = carregar_dados_pse_carga_treino()
         if jogador in carga_externa_hs and microciclo in carga_externa_hs[jogador]:
             return jsonify(carga_externa_hs[jogador][microciclo])
@@ -753,7 +741,6 @@ def get_carga_externa_hs(jogador, microciclo):
 @app.route('/api/racio_hs/<jogador>')
 def get_racio_hs(jogador):
     try: 
-        jogador = decode_nome(jogador)
         _, _, _, racio_carga_externa_hs, _ = calcular_metricas_carga_treino(jogador)
 
         if racio_carga_externa_hs:
@@ -768,7 +755,6 @@ def get_racio_hs(jogador):
 @app.route('/api/m_hs/<jogador>')
 def get_m_hs(jogador):
     try: 
-        jogador = decode_nome(jogador)
         _, _, _, _, m_porcento_hs = calcular_metricas_carga_treino(jogador)
 
         if m_porcento_hs:        
@@ -784,7 +770,6 @@ def get_m_hs(jogador):
 @app.route('/api/monotonia/<jogador>')
 def get_monotonia(jogador):
     try: 
-        jogador = decode_nome(jogador)
         _, carga_interna, _, _ = carregar_dados_pse_carga_treino()  # Carregar os dados da carga interna
         if jogador in carga_interna:
             monotonia_micro, _ = calcular_monotonia_strain(jogador, carga_interna)
@@ -800,7 +785,6 @@ def get_monotonia(jogador):
 @app.route('/api/strain/<jogador>')
 def get_strain(jogador):
     try: 
-        jogador = decode_nome(jogador)
         _, carga_interna, _, _ = carregar_dados_pse_carga_treino()  # Carregar os dados da carga interna
         if jogador in carga_interna:
             _, strain_micro = calcular_monotonia_strain(jogador, carga_interna)
@@ -815,19 +799,15 @@ def get_strain(jogador):
 @app.route('/api/zscore/acwr_pse/<jogador>/<int:microciclo>', methods=['GET'])
 def zscore_acwr_pse(jogador, microciclo):
     try:
-        jogador = decode_nome(jogador)
         return get_z_score(jogador, microciclo, "ACWR PSE")
-        
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
 
 @app.route('/api/zscore/acwr_dt/<jogador>/<int:microciclo>', methods=['GET'])
 def zscore_acwr_dt(jogador, microciclo):
-    try:
-        jogador = decode_nome(jogador)
+    try: 
         return get_z_score(jogador, microciclo, "ACWR DT")
-
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
     
@@ -835,9 +815,7 @@ def zscore_acwr_dt(jogador, microciclo):
 @app.route('/api/zscore/wellness/<jogador>/<int:microciclo>', methods=['GET'])
 def zscore_wellness(jogador, microciclo):
     try:
-        jogador = decode_nome(jogador)
         return get_z_score(jogador, microciclo, "Wellness")
-
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
@@ -845,9 +823,7 @@ def zscore_wellness(jogador, microciclo):
 @app.route('/api/zscore/monotonia/<jogador>/<int:microciclo>', methods=['GET'])
 def zscore_monotonia(jogador, microciclo):
     try:
-        jogador = decode_nome(jogador)
         return get_z_score(jogador, microciclo, "Monotonia")
-
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
@@ -855,9 +831,7 @@ def zscore_monotonia(jogador, microciclo):
 @app.route('/api/zscore/strain/<jogador>/<int:microciclo>', methods=['GET'])
 def zscore_strain(jogador, microciclo):
     try:
-        jogador = decode_nome(jogador)
         return get_z_score(jogador, microciclo, "Strain")
-
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
     
