@@ -80,6 +80,8 @@ function App() {
 
   // Buscar os dados do questionário para o jogador e microciclo selecionado (Análise Individual)
   useEffect(() => {
+    console.log('Jogador:', jogador);  // Deve ser o id do jogador, por exemplo, "sissefatumata"
+    console.log('Microciclo:', microciclo);  // Deve ser um número ou string representando o microciclo
     if (jogador && microciclo) {
       fetch(`${API_URL}/api/wellness/${jogador}/${microciclo}`)
         .then((response) => response.json())
